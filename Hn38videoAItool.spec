@@ -2,25 +2,40 @@
 
 from pathlib import Path
 
-project = Path(SPECPATH)
+PROJECT_ROOT = Path(SPECPATH)
+
+MAIN_FILE = PROJECT_ROOT / "desktop" / "main.py"
+ASSETS_DIR = PROJECT_ROOT / "assets"
+DATA_DIR = PROJECT_ROOT / "data"
 
 a = Analysis(
-    [str(project / "desktop" / "main.py")],
-    pathex=[str(project)],
-    binaries=[],
-    datas=[
-        (str(project / "assets"), "assets"),
-        (str(project / "data"), "data"),
+    [str(MAIN_FILE)],
+
+    pathex=[
+        str(PROJECT_ROOT),
+        str(PROJECT_ROOT / "desktop"),
     ],
+
+    binaries=[],
+
+    datas=[
+        (str(ASSETS_DIR), "assets"),
+        (str(DATA_DIR), "data"),
+    ],
+
     hiddenimports=[
         "desktop",
+        "desktop.main",
+
         "desktop.ui",
         "desktop.ui.app",
+
         "desktop.services",
         "desktop.services.backend",
         "desktop.services.job_manager",
         "desktop.services.bridge",
     ],
+
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -28,7 +43,9 @@ a = Analysis(
     noarchive=False,
 )
 
-pyz = PYZ(a.pure)
+pyz = PYZ(
+    a.pure
+)
 
 exe = EXE(
     pyz,
@@ -36,10 +53,17 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
+
     name="Hn38videoAItool",
+
     debug=False,
     bootloader_ignore_signals=False,
+
     strip=False,
-    upx=True,
+
+    # Tắt UPX để tránh lỗi build trên một số runner
+    upx=False,
+
+    # Không hiện cửa sổ console khi chạy EXE
     console=False,
 )
